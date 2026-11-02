@@ -85,3 +85,14 @@ Có thể thêm chế độ "nói chuyện tự do" với AI: app gửi câu b�
 - `lessons.js` – nội dung bài học + lộ trình
 - `sw.js`, `manifest.webmanifest`, `icons/` – để cài lên màn hình chính và chạy offline
 - `tools/make_icons.py` – tạo lại icon
+
+## Thử thách 30 ngày (bản 2)
+
+Mỗi ngày ~20–25 phút, mở app bấm **📅 Ngày N** rồi làm từ trên xuống:
+1. **🔁 Ôn thẻ** – câu đã học được hẹn ôn lại theo lịch (nói tốt thì lâu mới ôn, nói dở thì ôn sớm).
+2. **🎧 Luyện nghe** – 10 câu: nghe chọn nghĩa, nghe điền từ, nghe rồi chọn câu đáp. Có 🐢 chậm và ⚡ tốc độ thật.
+3. **📘 Bài mới** (hoặc **🎭 ôn nhập vai** giấu câu mẫu).
+4. **🗣 Nói tự do** 60–120 giây theo đề, máy đếm số từ, từ/phút và khung câu đã dùng. Ngày 1, 7, 14, 21, 28, 30 lưu bản thu để so với ngày 1.
+
+16 bài A2 → B1, có 4 bài cho công việc ở nhà máy: hỏi lại khi nghe không kịp, họp giao ban báo tiến độ, báo sự cố trên chuyền, chỉ việc/giải thích quy trình.
+Ngoài app: mỗi tuần nói chuyện thật với người 2–3 lần (đồng nghiệp, gia sư online), 15 phút cũng được.
