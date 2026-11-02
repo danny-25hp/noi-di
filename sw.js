@@ -1,7 +1,7 @@
 // Cache để mở app khi không có mạng. Đổi VERSION mỗi lần cập nhật nội dung.
-const VERSION = "noidi-v1";
+const VERSION = "noidi-v2";
 const FILES = [
-  "./", "index.html", "styles.css", "app.js", "speech.js", "lessons.js",
+  "./", "index.html", "styles.css", "app.js", "speech.js", "lessons.js", "plan.js",
   "manifest.webmanifest", "icons/icon-180.png", "icons/icon-192.png", "icons/icon-512.png"
 ];
 self.addEventListener("install", e => {

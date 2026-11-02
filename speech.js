@@ -54,7 +54,8 @@
       stop: () => new Promise(resolve => {
         rec.onstop = () => {
           stream.getTracks().forEach(t => t.stop());
-          resolve(chunks.length ? URL.createObjectURL(new Blob(chunks, { type: rec.mimeType || type || "audio/mp4" })) : null);
+          const blob = chunks.length ? new Blob(chunks, { type: rec.mimeType || type || "audio/mp4" }) : null;
+          resolve(blob ? { url: URL.createObjectURL(blob), blob } : null);
         };
         try { rec.stop(); } catch { stream.getTracks().forEach(t => t.stop()); resolve(null); }
       })
@@ -63,18 +64,48 @@
 
   // ---------- Nhận diện + ghi âm cùng lúc ----------
   // Trả về controller { stop(), result: Promise<{transcripts, audioUrl, error}> }
-  function listen({ record = true, onInterim } = {}) {
+  // long = nói tự do: nghe liên tục tới maxMs, tự bật lại khi Safari ngắt giữa chừng.
+  function listen({ record = true, onInterim, long = false, maxMs = 12000 } = {}) {
     let recog = null, recorder = null, stopped = false;
     let resolveOuter;
     const result = new Promise(r => (resolveOuter = r));
     const transcripts = [];
+    const finals = []; // các đoạn đã chốt (chế độ long)
     let error = null;
+    const t0 = Date.now();
 
     async function finish() {
       if (stopped) return; stopped = true;
       try { recog && recog.stop(); } catch {}
-      const audioUrl = recorder ? await recorder.stop().catch(() => null) : null;
-      resolveOuter({ transcripts, audioUrl, error });
+      const a = recorder ? await recorder.stop().catch(() => null) : null;
+      if (long) {
+        const text = finals.join(" ").replace(/\s+/g, " ").trim();
+        transcripts.length = 0; if (text) transcripts.push(text);
+      }
+      resolveOuter({ transcripts, audioUrl: a && a.url, audioBlob: a && a.blob, error, ms: Date.now() - t0 });
+    }
+
+    function startLong() {
+      recog = new SR();
+      recog.lang = "en-US";
+      recog.interimResults = true;
+      recog.continuous = true;
+      let seen = 0; // số kết quả đã chốt của phiên recog này
+      recog.onresult = e => {
+        let interim = "";
+        for (let i = seen; i < e.results.length; i++) {
+          if (e.results[i].isFinal) { finals.push(e.results[i][0].transcript); seen = i + 1; }
+          else interim += e.results[i][0].transcript;
+        }
+        onInterim && onInterim((finals.join(" ") + " " + interim).trim());
+      };
+      recog.onerror = e => { if (!["no-speech", "aborted"].includes(e.error)) error = e.error; };
+      recog.onend = () => {
+        if (stopped) return;
+        if (!error && Date.now() - t0 < maxMs - 500) { try { startLong(); return; } catch {} }
+        finish();
+      };
+      try { recog.start(); } catch (e) { error = "sr-start"; }
     }
 
     (async () => {
@@ -82,7 +113,8 @@
         try { recorder = await startRecorder(); }
         catch (e) { error = e.name === "NotAllowedError" ? "mic-denied" : "rec-failed"; }
       }
-      if (SR) {
+      if (SR && long) startLong();
+      else if (SR) {
         recog = new SR();
         recog.lang = "en-US";
         recog.interimResults = true;
@@ -106,8 +138,8 @@
         recog.onend = () => finish();
         try { recog.start(); } catch (e) { error = "sr-start"; }
       }
-      // An toàn: tự dừng sau 12 giây
-      setTimeout(finish, 12000);
+      // An toàn: tự dừng sau maxMs (mặc định 12 giây)
+      setTimeout(finish, maxMs);
     })();
 
     return { stop: finish, result };
@@ -197,6 +229,6 @@
     canRecognize: !!SR,
     canRecord: !!(navigator.mediaDevices && window.MediaRecorder),
     canSpeak: "speechSynthesis" in window,
-    speak, listen, score
+    speak, listen, score, normWord
   };
 })();

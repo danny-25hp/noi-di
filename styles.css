@@ -100,3 +100,28 @@ summary { color: var(--brand); cursor: pointer; }
 .set input[type=range] { width: 100%; }
 .set.chk { display: flex; gap: 8px; align-items: flex-start; }
 .env { padding-left: 0; list-style: none; }
+
+/* --- v2: thử thách 30 ngày, ôn thẻ, luyện nghe, nói tự do --- */
+.big.plan { text-align: left; }
+.big.plan small, .grid2 .big small { display: block; font-size: 13px; font-weight: 400; opacity: .85; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.grid2 .big { margin: 0; text-align: left; font-size: 16px; padding: 14px 12px; }
+.stats { gap: 6px; }
+.big:disabled { opacity: .45; }
+.dh { margin-top: 8px; }
+.task.ok { opacity: .7; }
+.ask { font-size: 18px; font-weight: 600; margin-bottom: 6px; }
+.row.center { justify-content: center; }
+.mic.small { width: 72px; height: 72px; font-size: 30px; margin: 10px auto 0; }
+.opts { display: grid; gap: 8px; margin: 12px 0; }
+.opt { text-align: left; border: 1px solid var(--line); background: var(--card); border-radius: 14px; padding: 12px 14px; }
+.opt.right { border-color: var(--good); background: color-mix(in srgb, var(--good) 15%, var(--card)); font-weight: 600; }
+.opt.wrong { border-color: var(--bad); background: color-mix(in srgb, var(--bad) 15%, var(--card)); }
+.opt.dim { opacity: .5; }
+.chunk { padding: 6px 0; border-bottom: 1px dashed var(--line); }
+.chunk:last-child { border-bottom: 0; }
+.chunk.used { color: var(--good); font-weight: 600; }
+.chunk.used::after { content: " ✓"; }
+.timer { text-align: center; font-size: 28px; font-weight: 800; color: var(--brand); margin-top: 8px; }
+.live.long { text-align: left; font-style: normal; background: var(--card); border: 1px dashed var(--line); border-radius: 12px; padding: 8px 12px; min-height: 48px; }
+.compare .stats b { font-size: 20px; }
